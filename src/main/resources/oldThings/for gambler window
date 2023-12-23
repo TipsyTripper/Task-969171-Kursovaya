@@ -1,0 +1,151 @@
+package game;
+
+import constants.ConstsBordersAndColours;
+import constants.ConstsForPoints;
+import gamblers.Gambler;
+import helping_thing.GameCondition;
+
+import java.util.ArrayList;
+
+public class GameMake {
+
+    private static GameFrame gameFrame;
+    private static Win win;
+    private static GamblerWindow gamblerWindow;
+    private static Gambler[] gamblers;
+    private static int gamblersCount;
+    private static int boltCount;
+    private static int numberForCircle = 0;
+    private static TheOneRoll theCone;
+    private static int numberForCone = 0;
+
+    private static int theBiggestDice = 0;
+
+    private static int x;
+
+    public GameMake(int gamblersCount, int boltCount) {
+        this.gamblersCount = gamblersCount;
+        this.boltCount = boltCount;
+        gamblers = new Gambler[gamblersCount];
+        this.x = ConstsBordersAndColours.RECTANGLE_Y / (gamblersCount * gamblersCount);
+    }
+
+    public static void createGamblerWindow() {
+        if (numberForCircle != gamblersCount) {
+            gamblerWindow = new GamblerWindow();
+            gamblerWindow.setVisible(true);
+            gamblerWindow.setResizable(false);
+        } else {
+            maneGame();
+            GameCondition.createGamblersList(gamblers);
+        }
+    }
+
+    public static void gamblerWindowDispose() {
+        gamblerWindow.dispose();
+    }
+
+    public static void createGambler() {
+        String name = gamblerWindow.getName();
+        boolean pcORnot = gamblerWindow.getPCorNOT();
+        int dice = gamblerWindow.getDice();
+        if (dice > theBiggestDice) {
+            theBiggestDice = dice;
+            numberForCone = numberForCircle;
+        }
+        x += ConstsBordersAndColours.RECTANGLE_Y / gamblersCount;
+        gamblers[numberForCircle] = new Gambler(name, pcORnot);
+        ++numberForCircle;
+        gamblerWindowDispose();
+        createGamblerWindow();
+    }
+
+    public static void rollDice() {
+        gamblerWindow.setDise();
+    }
+
+    public static void maneGame() {
+        gameFrame = new GameFrame(gamblersCount);
+        gameFrame.setVisible(true);
+        gameFrame.setResizable(false);
+    }
+
+    public static void gameRewrite(boolean check) {
+        gameFrame.rewrite(check);
+    }
+
+    public static void theEndOfTheRoll() {
+        theCone.theEnd();
+        changeNumberForCone();
+        createCone();
+        gameRewrite(true);
+    }
+    public static void gameDispose() {
+        gameFrame.dispose();
+    }
+
+    public static void createCone() {
+        theCone = new TheOneRoll(numberForCone, boltCount);
+    }
+
+    public static void throwDices() {
+        theCone.throwDice();
+    }
+
+    public static void thatConeAgain() {
+        cubesDelete();
+        theCone.throwDice();
+    }
+
+    public static int theNowestResult() {
+        return theCone.getTheResult();
+    }
+
+    public static void setSecondButton() {
+        gameFrame.secondButton();
+    }
+    public static void setMainButton() {
+        gameFrame.mainButton();
+    }
+
+
+    public static void theWin(String winner) {
+        win = new Win(winner);
+        win.setVisible(true);
+        win.setResizable(false);
+    }
+
+
+    public static void cubesOnBoard(int[] cubes, boolean check) {
+        ArrayList<String> cu = new ArrayList<>();
+        for (int t = 0; t < cubes.length; ++t) {
+            for (int m = 0; m < cubes[t]; ++m) {
+                switch (t) {
+                    case 0 -> cu.add("one");
+                    case ConstsForPoints.ONE -> cu.add("two");
+                    case ConstsForPoints.TWO -> cu.add("three");
+                    case ConstsForPoints.THREE -> cu.add("four");
+                    case ConstsForPoints.FOUR -> cu.add("five");
+                    case ConstsForPoints.FIVE -> cu.add("six");
+                }
+            }
+        }
+        gameFrame.addCubes(cu, numberForCone, check);
+    }
+
+    public static void cubesDelete() {
+        gameFrame.disposeCubes(numberForCone);
+    }
+
+    public static void changeNumberForCone() {
+        if (numberForCone < gamblersCount - 1) {
+            ++numberForCone;
+        } else {
+            numberForCone = 0;
+        }
+    }
+
+    public static int getNumberForCone() {
+        return numberForCone;
+    }
+}

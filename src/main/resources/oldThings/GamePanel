@@ -1,0 +1,79 @@
+package game;
+
+import constants.ConstsBordersAndColours;
+import gamblers.Gambler;
+import helping_thing.HelpingMethogs;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
+
+public class GamePanel extends JPanel {
+
+    private static ArrayList<Object> gamblers;
+    private static int countOfGamblers;
+
+    public GamePanel(int countOfGamblers, ArrayList<Object> gamblers) {
+        this.countOfGamblers = countOfGamblers;
+        this.gamblers = gamblers;
+        this.setBounds(ConstsBordersAndColours.SIX_HUNDRED, ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.SIX_HUNDRED, ConstsBordersAndColours.SIX_HUNDRED);
+        this.add(new Painter());
+
+        JButton roll = new JButton("Roll the dice");
+        this.add(roll, BorderLayout.SOUTH);
+
+        roll.addActionListener(new ActionsForRoll(roll));
+    }
+
+    static class Painter extends JComponent {
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g;
+
+            Image image = HelpingMethogs.imageGenerator("back1.png");
+            g2.drawImage(image, ConstsBordersAndColours.IDENTATION, ConstsBordersAndColours.IDENTATION, ConstsBordersAndColours.RECTANGLE_X, ConstsBordersAndColours.RECTANGLE_Y, null);
+
+            int x = ConstsBordersAndColours.RECTANGLE_Y / (countOfGamblers * countOfGamblers);
+            int colourR = ConstsBordersAndColours.HUNDRED;
+            int colourG = ConstsBordersAndColours.HUNDRED;
+            int colourB = ConstsBordersAndColours.COLOR_B2;
+            int partOfColor = ConstsBordersAndColours.MAX_COLOR / countOfGamblers / 2;
+            Font font = new Font("Comic Sans MS", Font.BOLD, ConstsBordersAndColours.FONT_SIZE_FIFTH);
+            g2.setFont(font);
+
+            for (int t = 0; t < gamblers.size(); ++t) {
+                Ellipse2D elley = new Ellipse2D.Float(x, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY);
+                g2.setPaint(new Color(colourR, colourG, colourB));
+                g2.fill(elley);
+
+                Image im = HelpingMethogs.imageGenerator("cat-gambler.png");
+                g2.drawImage(im, x, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, null);
+
+                Gambler gambler = (Gambler)gamblers.get(t);
+
+                g2.setPaint(Color.yellow);
+                g2.drawString(gambler.getName(), x, ConstsBordersAndColours.HUNDRED * 2);
+                g2.drawString("Points : " + gambler.getPointsLable().getPoints(), x, ConstsBordersAndColours.HUNDRED * 2 + ConstsBordersAndColours.TWENTY);
+                g2.drawString(gambler.getPCOrGambler(), x, ConstsBordersAndColours.HUNDRED * 2 + ConstsBordersAndColours.TWENTY * 2);
+
+                x += ConstsBordersAndColours.RECTANGLE_Y / countOfGamblers;
+                colourR += partOfColor;
+                colourG += partOfColor;
+                colourB -= partOfColor;
+            }
+
+        }
+
+
+    }
+}
+
+
+
+
+
+    protected void disposeCubes(int number) {
+        numberOfGambler = number;
+        paint = new Painter(false, false, true, countOfGamblers);
+        this.add(paint);
+    }

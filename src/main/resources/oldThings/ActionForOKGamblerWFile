@@ -1,0 +1,14 @@
+package gamblers;
+
+import helping_thing.GameCondition;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ActionForOKGamblerW implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        GameCondition.gameMake.createGambler();
+    }
+}

@@ -1,0 +1,63 @@
+package gamblers;
+
+import constants.ConstsBordersAndColours;
+import constants.ConstsForOpti;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class GamblerWindow extends JFrame{
+    private static JTextField inputName = new JTextField("", 5);
+    private static JRadioButton pc;
+
+    private static WhoIsFirst diceLable;
+    public GamblerWindow() {
+        super("Make Gambler");
+        this.setBounds(ConstsBordersAndColours.SIX_HUNDRED, ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.THREE_HUNDRED + ConstsForOpti.HALF, ConstsBordersAndColours.TWO_HUNDRED);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JLabel labelName = new JLabel("Input name:");
+        JButton ok = new JButton("OK");
+        JRadioButton gam = new JRadioButton("Gambler");
+        pc = new JRadioButton("PC");
+        diceLable = new WhoIsFirst();
+        JButton dice = new JButton("DICE");
+
+        Container container = this.getContentPane();
+        container.setLayout(new GridLayout(4, 2, 2, 2));
+
+        container.add(labelName);
+        container.add(inputName);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(gam);
+        group.add(pc);
+
+        container.add(pc);
+        pc.setSelected(true);
+        container.add(gam);
+        container.add(dice);
+        container.add(diceLable);
+
+        container.add(ok);
+
+        ok.addActionListener(new ActionForOKGamblerW());
+        dice.addActionListener(new ActionsForDice());
+    }
+
+    public String getName() {
+        return inputName.getText();
+    }
+
+    public boolean getPCorNOT() {
+        return pc.isSelected();
+    }
+
+    public int getDice() {
+        return diceLable.getDIce();
+    }
+
+    public void setDise() {
+        diceLable.roll();
+    }
+}

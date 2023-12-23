@@ -1,0 +1,194 @@
+    protected void rewrite(boolean check) {
+        paint = new Painter(false, check, true, countOfGamblers);
+        this.add(paint);
+        mainButton();
+        getContentPane().setVisible(false);
+        getContentPane().setVisible(true);
+    }
+
+    public void hate(boolean check) {
+        rewrite(check);
+    }
+
+    public void hate2(ArrayList<String> cubesForWin, int number, boolean check) {
+        addCubes(cubesForWin, number, check);
+    }
+
+    public void hate3() {
+        secondButton();
+    }
+
+    protected void addCubes(ArrayList<String> cubesForWin, int number, boolean check) {
+        numberOfGambler = number;
+        cubes = cubesForWin;
+        paint = new Painter(true, check, true, countOfGamblers);
+        this.add(paint);
+        getContentPane().setVisible(false);
+        getContentPane().setVisible(true);
+    }
+
+    protected void mainButton() {
+        this.remove(con);
+        this.add(mainButton, BorderLayout.SOUTH);
+        getContentPane().setVisible(false);
+        getContentPane().setVisible(true);
+    }
+
+    protected void secondButton() {
+        this.remove(mainButton);
+        this.add(con, BorderLayout.SOUTH);
+        getContentPane().setVisible(false);
+        getContentPane().setVisible(true);
+    }
+
+    protected void deleteButton() {
+        this.remove(mainButton);
+    }
+
+    static class Painter extends JComponent {
+        private final boolean check;
+        private final boolean checkForNewCone;
+        private final boolean checkForFirstRound;
+        private final int countOfGamblers;
+
+        public Painter(boolean check, boolean checkForNewCone, boolean checkForFirstRound, int countOfGamblers) {
+            this.check = check;
+            this.checkForNewCone = checkForNewCone;
+            this.checkForFirstRound = checkForFirstRound;
+            this.countOfGamblers = countOfGamblers;
+        }
+
+        protected void paintComponent(Graphics g) {
+            Gambler[] gamblers = GameMake.getGamblers();
+            Graphics2D g2 = (Graphics2D)g;
+
+            Image image = HelpingMethogs.imageGenerator("back1.png");
+            g2.drawImage(image, ConstsBordersAndColours.IDENTATION, ConstsBordersAndColours.IDENTATION, ConstsBordersAndColours.RECTANGLE_X, ConstsBordersAndColours.RECTANGLE_Y, null);
+
+            int x = ConstsBordersAndColours.RECTANGLE_Y / (countOfGamblers * countOfGamblers);
+            int colourR = ConstsBordersAndColours.HUNDRED;
+            int colourG = ConstsBordersAndColours.HUNDRED;
+            int colourB = ConstsBordersAndColours.COLOR_B2;
+            int partOfColor = ConstsBordersAndColours.MAX_COLOR / countOfGamblers / 2;
+            Font font = new Font("Comic Sans MS", Font.BOLD, ConstsBordersAndColours.FONT_SIZE_FIFTH);
+            g2.setFont(font);
+
+            for (Gambler gambler : gamblers) {
+                Ellipse2D elley = new Ellipse2D.Float(x, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY);
+                g2.setPaint(new Color(colourR, colourG, colourB));
+                g2.fill(elley);
+
+                Image im = HelpingMethogs.imageGenerator("cat-gambler.png");
+                g2.drawImage(im, x, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, null);
+
+                g2.setPaint(Color.BLACK);
+                g2.drawString(gambler.getName(), x, ConstsBordersAndColours.HUNDRED * 2);
+                g2.drawString("Points : " + gambler.getPoints(), x, ConstsBordersAndColours.HUNDRED * 2 + ConstsBordersAndColours.TWENTY);
+                g2.drawString(gambler.getPCOrGambler(), x, ConstsBordersAndColours.HUNDRED * 2 + ConstsBordersAndColours.TWENTY * 2);
+
+                x += ConstsBordersAndColours.RECTANGLE_Y / countOfGamblers;
+                colourR += partOfColor;
+                colourG += partOfColor;
+                colourB -= partOfColor;
+
+            }
+
+            if (checkForFirstRound) {
+                if (checkForNewCone) {
+                    g2.setColor(Color.YELLOW);
+                    g2.drawString("Промежуточный плюс" + GameMake.getTheNowestResult(), ConstsBordersAndColours.THREE_HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED);
+                    g2.setColor(Color.BLACK);
+                    if (numberOfGambler != countOfGamblers - 1) {
+                        g2.drawString(gamblers[numberOfGambler + 1].getName() + " получит: " + GameMake.getTheNowestResult(), ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED + ConstsForPoints.HALF / 2);
+                        g2.drawString("у " + gamblers[numberOfGambler + 1].getName() + " количество болтов: " + gamblers[numberOfGambler].getCountOfBolt(), ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED + ConstsForPoints.HALF);
+                        font = new Font("Comic Sans MS", Font.BOLD, ConstsBordersAndColours.TWENTY);
+                        g2.setFont(font);
+                        g2.drawString("Сейчас ходит " + gamblers[numberOfGambler + 1].getName(), ConstsBordersAndColours.THREE_HUNDRED, ConstsBordersAndColours.COLOR_G * 2);
+                    } else {
+                        g2.drawString(gamblers[0].getName() + " получит: " + GameMake.getTheNowestResult(), ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED + ConstsForPoints.HALF / 2);
+                        g2.drawString("у " + gamblers[0].getName() + " количество болтов: " + gamblers[0].getCountOfBolt(), ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED + ConstsForPoints.HALF);
+                        font = new Font("Comic Sans MS", Font.BOLD, ConstsBordersAndColours.TWENTY);
+                        g2.setFont(font);
+                        g2.drawString("Сейчас ходит" + gamblers[0].getName(), ConstsBordersAndColours.THREE_HUNDRED, ConstsBordersAndColours.COLOR_G * 2);
+                    }
+                } else {
+                    g2.drawString(gamblers[numberOfGambler].getName() + " получит: " + GameMake.getTheNowestResult(), ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED + ConstsForPoints.HALF / 2);
+                    g2.drawString("у " + gamblers[numberOfGambler].getName() + " столько болтов: " + gamblers[numberOfGambler].getCountOfBolt(), ConstsBordersAndColours.HUNDRED, ConstsBordersAndColours.FOUR_HUNDRED + ConstsForPoints.HALF);
+                    font = new Font("Comic Sans MS", Font.BOLD, ConstsBordersAndColours.TWENTY);
+                    g2.setFont(font);
+                    g2.drawString("Сейчас ходит " + gamblers[numberOfGambler].getName(), ConstsBordersAndColours.THREE_HUNDRED, ConstsBordersAndColours.COLOR_G * 2);
+                }
+            }
+
+            if (check) {
+                x = ConstsForPoints.HALF;
+                for (int t = 0; t < cubes.size(); ++t) {
+                    Image im = HelpingMethogs.imageOfDice(cubes.get(t));
+
+                    g2.drawImage(im, x, ConstsBordersAndColours.MAX_COLOR, ConstsBordersAndColours.NINETY, ConstsBordersAndColours.NINETY, null);
+                    x += ConstsForPoints.HUNDRED;
+                }
+            }
+
+        }
+
+    }
+
+    public static class NotRollButton extends JButton{
+        public NotRollButton() {
+
+            JButton notRoll= new JButton("Not Roll");
+            this.add(notRoll, BorderLayout.SOUTH);
+
+            notRoll.addActionListener(new ActionsForNotRoll());
+        }
+    }
+    public static class ActionsForNotRoll implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameMake.theEndOfTheRoll();
+        }
+    }
+
+    public static class MainRollButton extends JButton {
+        public MainRollButton() {
+
+            JButton roll = new JButton("Roll the dice");
+            this.add(roll, BorderLayout.SOUTH);
+
+            roll.addActionListener(new ActionsForRoll(GameMake.getNumberForCone()));
+        }
+
+    }
+    public static class ActionsForRoll implements ActionListener {
+        private final int numberOfGambler;
+
+        public  ActionsForRoll(int numberOfGambler) {
+            this.numberOfGambler = numberOfGambler;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!GameMake.getPcOrNot(numberOfGambler)) {
+                GameMake.createCone();
+                GameMake.throwDices();
+            }
+        }
+    }
+
+    public static class SecondRollButton extends JButton {
+        public SecondRollButton() {
+
+            JButton roll = new JButton("Roll again");
+            this.add(roll, BorderLayout.SOUTH);
+
+            roll.addActionListener(new ActionsForSecondRoll());
+        }
+    }
+    public static class ActionsForSecondRoll implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameMake.throwDices();
+        }
+    }
+}
